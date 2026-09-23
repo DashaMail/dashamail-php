@@ -3,7 +3,7 @@
 namespace DashaMail\Resource;
 
 /**
- * Bulk campaigns: draft, build, launch, pause, attachments, folders.
+ * Bulk campaigns: draft, build, launch, pause, A/B tests, attachments, folders.
  * https://dashamail.ru/api/campaigns/
  */
 class Campaigns extends AbstractResource
@@ -63,7 +63,20 @@ class Campaigns extends AbstractResource
         return $this->client->request('POST', "/campaigns/{$campaignId}/resume");
     }
 
-    /** POST /campaigns/{campaign_id}/unschedule — pull a SCHEDULE campaign back to DRAFT. */
+    /** POST /campaigns/{campaign_id}/schedule */
+    public function schedule($campaignId, $deliveryTime, array $params = [])
+    {
+        $params['delivery_time'] = $deliveryTime;
+        return $this->client->request('POST', "/campaigns/{$campaignId}/schedule", [], $params);
+    }
+
+    /** POST /campaigns/{campaign_id}/send — send a draft right now. */
+    public function send($campaignId)
+    {
+        return $this->client->request('POST', "/campaigns/{$campaignId}/send");
+    }
+
+    /** POST /campaigns/{campaign_id}/unschedule — pull a scheduled campaign back to DRAFT. */
     public function unschedule($campaignId)
     {
         return $this->client->request('POST', "/campaigns/{$campaignId}/unschedule");
@@ -122,5 +135,46 @@ class Campaigns extends AbstractResource
     public function moveToFolder($campaignId, $folderId)
     {
         return $this->client->request('POST', "/campaigns/{$campaignId}/move", [], ['folder_id' => $folderId]);
+    }
+
+    // ── A/B testing ──────────────────────────────────────────────────────
+
+    /** POST /campaigns/{campaign_id}/ab — turn a draft into an A/B test. */
+    public function createAb($campaignId, array $params = [])
+    {
+        return $this->client->request('POST', "/campaigns/{$campaignId}/ab", [], $params);
+    }
+
+    /** GET /campaigns/{campaign_id}/ab */
+    public function getAb($campaignId)
+    {
+        return $this->client->request('GET', "/campaigns/{$campaignId}/ab");
+    }
+
+    /** PUT /campaigns/{campaign_id}/ab */
+    public function updateAb($campaignId, array $params = [])
+    {
+        return $this->client->request('PUT', "/campaigns/{$campaignId}/ab", [], $params);
+    }
+
+    /** DELETE /campaigns/{campaign_id}/ab — dismantle the A/B test back into a plain campaign. */
+    public function deleteAb($campaignId)
+    {
+        return $this->client->request('DELETE', "/campaigns/{$campaignId}/ab");
+    }
+
+    /** POST /campaigns/{campaign_id}/ab/winner — pick the winning variant and schedule the rest. */
+    public function abWinner($campaignId, $variantId, $deliveryTime)
+    {
+        return $this->client->request('POST', "/campaigns/{$campaignId}/ab/winner", [], [
+            'variant_id' => $variantId,
+            'delivery_time' => $deliveryTime,
+        ]);
+    }
+
+    /** DELETE /campaigns/{campaign_id}/ab/winner — cancel a previously chosen winner. */
+    public function cancelAbWinner($campaignId)
+    {
+        return $this->client->request('DELETE', "/campaigns/{$campaignId}/ab/winner");
     }
 }

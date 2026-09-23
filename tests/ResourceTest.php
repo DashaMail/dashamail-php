@@ -2,9 +2,12 @@
 
 namespace DashaMail\Tests;
 
+use DashaMail\Resource\Campaigns;
 use DashaMail\Resource\Images;
 use DashaMail\Resource\Lists;
+use DashaMail\Resource\Reports;
 use DashaMail\Resource\Transactional;
+use DashaMail\Resource\Workflows;
 use PHPUnit\Framework\TestCase;
 
 class ResourceTest extends TestCase
@@ -57,6 +60,80 @@ class ResourceTest extends TestCase
         $decoded = json_decode($client->calls[0]['body'], true);
         $this->assertSame(2, $decoded['to_list_id']);
         $this->assertSame(555, $decoded['member_id']);
+    }
+
+    public function testListsFindMemberHitsAccountWideEndpoint()
+    {
+        $client = new FakeClient();
+        $client->queueResponse(200, $this->ok([['list_id' => 1, 'email' => 'a@example.com']]));
+        $lists = new Lists($client);
+
+        $lists->findMember('a@example.com');
+
+        $this->assertStringContainsString('/members?', $client->calls[0]['url']);
+        $this->assertStringContainsString('email=a%40example.com', $client->calls[0]['url']);
+    }
+
+    public function testCampaignsScheduleSendsDeliveryTime()
+    {
+        $client = new FakeClient();
+        $client->queueResponse(200, $this->ok());
+        $campaigns = new Campaigns($client);
+
+        $campaigns->schedule(1, '2026-01-01 10:00:00');
+
+        $decoded = json_decode($client->calls[0]['body'], true);
+        $this->assertSame('2026-01-01 10:00:00', $decoded['delivery_time']);
+        $this->assertStringEndsWith('/campaigns/1/schedule', $client->calls[0]['url']);
+    }
+
+    public function testCampaignsSendHitsSendEndpoint()
+    {
+        $client = new FakeClient();
+        $client->queueResponse(200, $this->ok());
+        $campaigns = new Campaigns($client);
+
+        $campaigns->send(1);
+
+        $this->assertStringEndsWith('/campaigns/1/send', $client->calls[0]['url']);
+        $this->assertSame('POST', $client->calls[0]['method']);
+    }
+
+    public function testCampaignsAbWinnerSendsRequiredFields()
+    {
+        $client = new FakeClient();
+        $client->queueResponse(200, $this->ok());
+        $campaigns = new Campaigns($client);
+
+        $campaigns->abWinner(1, 2, '2026-01-01 10:00:00');
+
+        $decoded = json_decode($client->calls[0]['body'], true);
+        $this->assertSame(2, $decoded['variant_id']);
+        $this->assertSame('2026-01-01 10:00:00', $decoded['delivery_time']);
+    }
+
+    public function testReportsAbHitsVariantsEndpoint()
+    {
+        $client = new FakeClient();
+        $client->queueResponse(200, $this->ok(['variants' => []]));
+        $reports = new Reports($client);
+
+        $reports->ab(1);
+
+        $this->assertStringEndsWith('/reports/1/variants', $client->calls[0]['url']);
+    }
+
+    public function testWorkflowsCopySendsParams()
+    {
+        $client = new FakeClient();
+        $client->queueResponse(200, $this->ok(['workflow_id' => 2]));
+        $workflows = new Workflows($client);
+
+        $workflows->copy(1, ['format' => 'json']);
+
+        $decoded = json_decode($client->calls[0]['body'], true);
+        $this->assertSame('json', $decoded['format']);
+        $this->assertStringEndsWith('/workflows/1/copy', $client->calls[0]['url']);
     }
 
     public function testTransactionalSendBuildsBody()

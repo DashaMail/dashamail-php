@@ -13,6 +13,7 @@ use DashaMail\Resource\Router;
 use DashaMail\Resource\Segments;
 use DashaMail\Resource\Templates;
 use DashaMail\Resource\Transactional;
+use DashaMail\Resource\Workflows;
 
 /**
  * Entry point of the DashaMail PHP SDK.
@@ -25,6 +26,7 @@ use DashaMail\Resource\Transactional;
  * @property-read Segments      $segments
  * @property-read Campaigns     $campaigns
  * @property-read Automations   $automations
+ * @property-read Workflows     $workflows
  * @property-read Templates     $templates
  * @property-read Reports       $reports
  * @property-read Transactional $transactional
@@ -42,6 +44,7 @@ class DashaMail
     public $segments;
     public $campaigns;
     public $automations;
+    public $workflows;
     public $templates;
     public $reports;
     public $transactional;
@@ -62,6 +65,7 @@ class DashaMail
         $this->segments = new Segments($this->client);
         $this->campaigns = new Campaigns($this->client);
         $this->automations = new Automations($this->client);
+        $this->workflows = new Workflows($this->client);
         $this->templates = new Templates($this->client);
         $this->reports = new Reports($this->client);
         $this->transactional = new Transactional($this->client);

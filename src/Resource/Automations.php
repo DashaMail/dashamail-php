@@ -8,6 +8,12 @@ namespace DashaMail\Resource;
  */
 class Automations extends AbstractResource
 {
+    /** GET /automations/events — reference of available trigger events. */
+    public function events()
+    {
+        return $this->client->request('GET', '/automations/events');
+    }
+
     /** GET /automations */
     public function all(array $params = [])
     {
@@ -41,11 +47,5 @@ class Automations extends AbstractResource
     {
         $params['email'] = $email;
         return $this->client->request('POST', "/automations/{$campaignId}/trigger", [], $params);
-    }
-
-    /** POST /automations/{campaign_id}/copy */
-    public function copy($campaignId, array $params = [])
-    {
-        return $this->client->request('POST', "/automations/{$campaignId}/copy", [], $params);
     }
 }

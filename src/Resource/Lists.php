@@ -56,6 +56,12 @@ class Lists extends AbstractResource
         return $this->client->request('GET', "/lists/{$listId}/members/" . rawurlencode($email));
     }
 
+    /** GET /members — find a subscriber address across every list in the account. */
+    public function findMember($email)
+    {
+        return $this->client->request('GET', '/members', ['email' => $email]);
+    }
+
     /** POST /lists/{list_id}/members — merge_1..merge_N and the rest go in $params. */
     public function addMember($listId, $email, array $params = [])
     {

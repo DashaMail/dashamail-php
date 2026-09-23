@@ -4,7 +4,7 @@ namespace DashaMail\Resource;
 
 /**
  * Campaign statistics: sent/delivered/opened/clicked/bounced, click and bounce
- * breakdowns, geography, mail clients, event feed.
+ * breakdowns, geography, mail clients, event feed, A/B test results.
  * https://dashamail.ru/api/reports/
  */
 class Reports extends AbstractResource
@@ -19,6 +19,12 @@ class Reports extends AbstractResource
     public function timeline($campaignId, array $params = [])
     {
         return $this->client->request('GET', "/reports/{$campaignId}/timeline", $params);
+    }
+
+    /** GET /reports/{campaign_id}/variants — A/B test results. */
+    public function ab($campaignId)
+    {
+        return $this->client->request('GET', "/reports/{$campaignId}/variants");
     }
 
     /** POST /reports/compare — compare metrics across periods/campaigns/lists. */

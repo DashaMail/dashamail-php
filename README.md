@@ -57,10 +57,11 @@ or throws a `DashaMail\Exception\ApiException`.
 |------------------|-------------------------------------|--------|
 | `->lists`        | `DashaMail\Resource\Lists`          | Address lists, subscribers, merge fields, imports |
 | `->segments`      | `DashaMail\Resource\Segments`       | Saved subscriber segments |
-| `->campaigns`     | `DashaMail\Resource\Campaigns`      | Bulk campaigns: draft, launch, pause, attachments, folders |
+| `->campaigns`     | `DashaMail\Resource\Campaigns`      | Bulk campaigns: draft, launch, pause, A/B tests, attachments, folders |
 | `->automations`   | `DashaMail\Resource\Automations`    | Event-triggered emails |
+| `->workflows`     | `DashaMail\Resource\Workflows`      | Visual-builder automation scenarios |
 | `->templates`     | `DashaMail\Resource\Templates`      | Saved HTML templates and templated campaigns |
-| `->reports`       | `DashaMail\Resource\Reports`        | Campaign statistics, events, click/bounce/geo breakdowns |
+| `->reports`       | `DashaMail\Resource\Reports`        | Campaign statistics, events, click/bounce/geo breakdowns, A/B results |
 | `->transactional` | `DashaMail\Resource\Transactional`  | One-off transactional email: send, status, log, stats |
 | `->account`       | `DashaMail\Resource\Account`        | Balance, senders, sending domains, webhooks |
 | `->dialogs`       | `DashaMail\Resource\Dialogs`        | Subscriber replies to campaigns |
