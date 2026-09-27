@@ -1,0 +1,44 @@
+{
+    "name": "dashamail/dashamail-php",
+    "description": "Official PHP SDK for the DashaMail REST API v2",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["dashamail", "email", "sdk", "api", "transactional email", "email marketing", "smtp"],
+    "homepage": "https://dashamail.ru/api/",
+    "support": {
+        "issues": "https://github.com/dashamail/dashamail-php/issues",
+        "docs": "https://dashamail.ru/api/"
+    },
+    "authors": [
+        {
+            "name": "DashaMail",
+            "email": "support@dashamail.ru",
+            "homepage": "https://dashamail.ru"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5 || ^9.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "DashaMail\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DashaMail\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "scripts": {
+        "test": "phpunit --colors=always"
+    }
+}
